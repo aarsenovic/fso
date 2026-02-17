@@ -22,13 +22,17 @@ const Statistics = ({ good, neutral, bad }) => {
     <div>
       <h2>statistics</h2>
 
+      <table>
+        <tbody>
+        <StatisticLine text={"good"} statistic={good} />
+        <StatisticLine text={"neutral"} statistic={neutral} />
+        <StatisticLine text={"bad"} statistic={bad} />
+        <StatisticLine text={"all"} statistic={total} />
+        <StatisticLine text={"average"} statistic={average} />
+        <StatisticLine text={"positive"} statistic={`${positive}%`} />
+        </tbody>
+      </table>
 
-      <StatisticLine text={"good"} statistic={good} />
-      <StatisticLine text={"neutral"} statistic={neutral} />
-      <StatisticLine text={"bad"} statistic={bad} />
-      <StatisticLine text={"all"} statistic={total} />
-      <StatisticLine text={"average"} statistic={average} />
-      <StatisticLine text={"positive"} statistic={`${positive}%`} />
     </div>
   )
 
@@ -39,7 +43,12 @@ const Button = ({ onClick, text }) => {
 }
 
 const StatisticLine = ({ text, statistic }) => {
-  return <p>{text} {statistic}</p>
+  return (
+    <tr>
+      <td>{text}</td>
+      <td>{statistic}</td>
+    </tr>
+  )
 }
 
 
