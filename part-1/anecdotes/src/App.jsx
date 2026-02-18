@@ -30,6 +30,7 @@ const App = () => {
 
 
 
+
   console.log(selected);
 
   const handleClick = () => {
@@ -37,14 +38,24 @@ const App = () => {
     let copy = [...votesCount];
     copy[selected] = copy[selected] + 1
     setVotesCount(copy)
+
+    
+
   }
+
+   const maxIndex = votesCount.indexOf(Math.max(...votesCount));
 
   return (
     <div>
+      <h1>Anecdote of the day</h1>
       {anecdotes[selected]}
       <Button onClick={() => setSelected(Math.floor(Math.random() * anecdotes.length))} text={"Next anecdote"} />
       <p>has {votesCount[selected]} votes</p>
       <Button onClick={handleClick} text={"Vote"} />
+      <h2>Anecdote with most votes</h2>
+      <div>
+        {anecdotes[maxIndex]}
+      </div>
     </div>
   )
 }
