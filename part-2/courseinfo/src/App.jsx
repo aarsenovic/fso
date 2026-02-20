@@ -16,7 +16,8 @@ const Content = ({parts}) => {
 
 
 const Total = ({parts}) => {
-  const total = parts[0].exercises+parts[1].exercises+parts[2].exercises;
+  const exercises = parts.map((part)=>part.exercises)
+  const total = exercises.reduce((total, number)=> total+number, 0);
   return(
     <>
       <p>Number of exercises {total}</p>
@@ -35,7 +36,7 @@ const Course = ({course}) => {
     <div>
       <Header course={course}/>
       <Content parts={course.parts}/>
-      {/* <Total parts={course.parts}/> */}
+      <Total parts={course.parts}/>
     </div>
   )
 }
