@@ -1,4 +1,4 @@
-import { useState, useEffect} from 'react'
+import { useState, useEffect } from 'react'
 import Filter from '../components/Filter'
 import PersonForm from '../components/PersonForm'
 import Persons from '../components/Persons'
@@ -10,35 +10,40 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [searchFilter, setSearchFilter] = useState('')
 
- useEffect(()=>{
+  useEffect(() => {
 
-  axios
-    .get("http://localhost:3001/persons")
-    .then(response => {
-      setPersons(response.data)
-    })
- },[])
+    axios
+      .get("http://localhost:3001/persons")
+      .then(response => {
+        setPersons(response.data)
+      })
+  }, [])
 
 
   const addNewPhoneNumber = (event) => {
     event.preventDefault();
 
-    if(persons.some(person=>person.name === newName)) {
+    if (persons.some(person => person.name === newName)) {
       alert(`${newName} is already taken`)
       return
     }
-  
+
     const newNameObject = {
       name: newName,
       number: newNumber
     }
 
-    setPersons(persons.concat(newNameObject));
-    setNewName('');
-    setNewNumber('');
+    axios
+      .post('http://localhost:3001/persons', newNameObject)
+      .then(response => {
+        setPersons(persons.concat(response.data));
+        setNewName('');
+        setNewNumber('');
+      })
+
   }
 
-  const handleNameChange = (event)=> {
+  const handleNameChange = (event) => {
     setNewName(event.target.value);
   }
 
@@ -50,21 +55,21 @@ const App = () => {
     setSearchFilter(event.target.value);
   }
 
-  const namesToShow = searchFilter ?persons.filter((person) => person.name.toLowerCase().includes(searchFilter.toLowerCase())) :persons 
+  const namesToShow = searchFilter ? persons.filter((person) => person.name.toLowerCase().includes(searchFilter.toLowerCase())) : persons
 
   return (
     <div>
       <h2>Phonebook</h2>
 
-      <Filter searchFilter={searchFilter} handleFilterChange={handleFilterChange}/>
+      <Filter searchFilter={searchFilter} handleFilterChange={handleFilterChange} />
 
       <h2>Add new</h2>
-      <PersonForm onSubmit={addNewPhoneNumber} newName={newName} handleNameChange={handleNameChange} newNumber={newNumber} handleNumberChange={handleNumberChange}/>
+      <PersonForm onSubmit={addNewPhoneNumber} newName={newName} handleNameChange={handleNameChange} newNumber={newNumber} handleNumberChange={handleNumberChange} />
       <h2>Numbers</h2>
       ...
       {/* <div>debug {newName}</div> */}
       {/* {namesToShow.map(person=><div key={person.name}>{person.name} {person.number}</div>)} */}
-      <Persons namesToShow={namesToShow}/>
+      <Persons namesToShow={namesToShow} />
     </div>
   )
 }
