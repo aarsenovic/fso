@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react'
 import Filter from '../components/Filter'
 import PersonForm from '../components/PersonForm'
 import Persons from '../components/Persons'
-import axios from 'axios'
 import personService from './services/persons'
 
 const App = () => {
@@ -62,6 +61,16 @@ const App = () => {
 
   const namesToShow = searchFilter ? persons.filter((person) => person.name.toLowerCase().includes(searchFilter.toLowerCase())) : persons
 
+  const removePerson = (id) => {
+    personService
+    .deletePerson(id)
+    .then(() => {
+      setPersons(prev =>
+        prev.filter(person => person.id !== id)
+      )
+    })
+  }
+
   return (
     <div>
       <h2>Phonebook</h2>
@@ -74,7 +83,7 @@ const App = () => {
       ...
       {/* <div>debug {newName}</div> */}
       {/* {namesToShow.map(person=><div key={person.name}>{person.name} {person.number}</div>)} */}
-      <Persons namesToShow={namesToShow} />
+      <Persons namesToShow={namesToShow} removePerson={removePerson}/>
     </div>
   )
 }
