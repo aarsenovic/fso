@@ -3,12 +3,15 @@ import Filter from '../components/Filter'
 import PersonForm from '../components/PersonForm'
 import Persons from '../components/Persons'
 import personService from './services/persons'
+import Notification from '../components/Notification'
+import './index.css'
 
 const App = () => {
   const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [searchFilter, setSearchFilter] = useState('')
+  const [message, setMessage] = useState('');
 
   useEffect(() => {
 
@@ -37,14 +40,17 @@ const App = () => {
     const existingName = persons.find(person => person.name === newName)
 
     if (existingName) {
-      const person = persons.find(p => p.name === newName)
       if ((window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`))) {
         personService
-          .updatePerson(person.id, newNameObject)
+          .updatePerson(existingName.id, newNameObject)
           .then(returnedPerson => {
-            setPersons(persons.map(p => p.id === person.id ? returnedPerson : p))
+            setPersons(persons.map(p => p.id === existingName.id ? returnedPerson : p))
             setNewName('');
             setNewNumber('');
+            setMessage(`${newName} number changed`)
+            setTimeout(() => {
+              setMessage(null)
+            }, 5000)
           })
       }
     }
@@ -56,7 +62,13 @@ const App = () => {
           setPersons(persons.concat(returnedPerson))
           setNewName('');
           setNewNumber('');
+          setMessage(`Added ${newName}`)
+          setTimeout(() => {
+            setMessage(null)
+          }, 5000)
         })
+
+
     }
 
 
@@ -89,6 +101,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={message} />
 
       <Filter searchFilter={searchFilter} handleFilterChange={handleFilterChange} />
 
