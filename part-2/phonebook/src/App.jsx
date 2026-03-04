@@ -13,10 +13,10 @@ const App = () => {
   useEffect(() => {
 
     personService
-    .getAll()
-    .then(initialPersons => {
-      setPersons(initialPersons)
-    })
+      .getAll()
+      .then(initialPersons => {
+        setPersons(initialPersons)
+      })
 
 
 
@@ -27,23 +27,38 @@ const App = () => {
   const addNewPhoneNumber = (event) => {
     event.preventDefault();
 
-    if (persons.some(person => person.name === newName)) {
-      alert(`${newName} is already taken`)
-      return
-    }
 
     const newNameObject = {
       name: newName,
       number: newNumber
     }
 
-    personService
-    .create(newNameObject)
-    .then(returnedPerson => {
-      setPersons(persons.concat(returnedPerson))
-      setNewName('');
-      setNewNumber('');
-    })
+
+    const existingName = persons.find(person => person.name === newName)
+
+    if (existingName) {
+      const person = persons.find(p => p.name === newName)
+      if ((window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`))) {
+        personService
+          .updatePerson(person.id, newNameObject)
+          .then(returnedPerson => {
+            setPersons(persons.map(p => p.id === person.id ? returnedPerson : p))
+            setNewName('');
+            setNewNumber('');
+          })
+      }
+    }
+
+    else {
+      personService
+        .create(newNameObject)
+        .then(returnedPerson => {
+          setPersons(persons.concat(returnedPerson))
+          setNewName('');
+          setNewNumber('');
+        })
+    }
+
 
   }
 
@@ -63,12 +78,12 @@ const App = () => {
 
   const removePerson = (id) => {
     personService
-    .deletePerson(id)
-    .then(() => {
-      setPersons(prev =>
-        prev.filter(person => person.id !== id)
-      )
-    })
+      .deletePerson(id)
+      .then(() => {
+        setPersons(prev =>
+          prev.filter(person => person.id !== id)
+        )
+      })
   }
 
   return (
@@ -83,7 +98,7 @@ const App = () => {
       ...
       {/* <div>debug {newName}</div> */}
       {/* {namesToShow.map(person=><div key={person.name}>{person.name} {person.number}</div>)} */}
-      <Persons namesToShow={namesToShow} removePerson={removePerson}/>
+      <Persons namesToShow={namesToShow} removePerson={removePerson} />
     </div>
   )
 }
