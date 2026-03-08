@@ -1,5 +1,6 @@
 import axios from "axios"
 import { useState, useEffect } from "react"
+import CountryView from "./components/CountryView"
 
 function App() {
   const [searchFilter, setSearchFilter] = useState('')
@@ -38,7 +39,8 @@ function App() {
           {namesToShow.map((country) => {
             return (
               <li key={country.ccn3}>
-                {country.name.common}
+                {/* {country.name.common} */}
+                <CountryView country={country}/>
               </li>
             )
 
