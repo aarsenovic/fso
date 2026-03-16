@@ -3,6 +3,10 @@ const app = express()
 
 app.use(express.json())
 
+const morgan = require('morgan')
+
+app.use(morgan('tiny'))
+
 let persons = [
     {
         id: "1",
@@ -69,7 +73,7 @@ app.post('/api/persons', (request, response) => {
             error: 'name is required'
         })
     }
-    else if(!body.number) {
+     if(!body.number) {
         return response.status(400).json({
             error: 'number is required'
         })
