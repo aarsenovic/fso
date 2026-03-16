@@ -64,6 +64,25 @@ app.post('/api/persons', (request, response) => {
 
     const body = request.body
 
+    if(!body.name) {
+        return response.status(400).json({
+            error: 'name is required'
+        })
+    }
+    else if(!body.number) {
+        return response.status(400).json({
+            error: 'number is required'
+        })
+    }
+
+    const existingName = persons.find(person => person.name === body.name)
+
+    if(existingName) {
+        return response.status(400).json({
+            error: 'name already exists'
+        })
+    }
+
     const person = {
         name: body.name,
         number: body.number,
