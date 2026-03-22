@@ -12,7 +12,7 @@ app.use(express.json())
 const morgan = require('morgan')
 
 morgan.token('body', (req, res) => {
-  return JSON.stringify(req.body);
+    return JSON.stringify(req.body);
 })
 
 app.use(morgan(':method :url :status :response-time ms - Request Body: :body'))
@@ -40,14 +40,14 @@ let persons = [
     }
 ]
 
-app.get('/api/persons', (request, response)=> {
+app.get('/api/persons', (request, response) => {
     // response.json(persons)
     Person.find({}).then(persons => {
         response.json(persons)
     })
 })
 
-app.get('/info', (request, response)=> {
+app.get('/info', (request, response) => {
     response.send(`
         <p>Phonebook has info for ${persons.length} people</p>
         <p>${new Date()}</p>
@@ -60,7 +60,7 @@ app.get('/api/persons/:id', (request, response) => {
 
     const person = persons.find(person => person.id === id)
 
-    if(person) {
+    if (person) {
         response.json(person)
     } else {
         response.status(404).end()
@@ -81,12 +81,12 @@ app.post('/api/persons', (request, response) => {
 
     const body = request.body
 
-    if(!body.name) {
+    if (!body.name) {
         return response.status(400).json({
             error: 'name is required'
         })
     }
-     if(!body.number) {
+    if (!body.number) {
         return response.status(400).json({
             error: 'number is required'
         })
@@ -94,21 +94,22 @@ app.post('/api/persons', (request, response) => {
 
     const existingName = persons.find(person => person.name === body.name)
 
-    if(existingName) {
+    if (existingName) {
         return response.status(400).json({
             error: 'name already exists'
         })
     }
 
-    const person = {
+    const person = new Person({
         name: body.name,
         number: body.number,
-        id: generatedId
-    }
+    })
 
-    persons = persons.concat(person)
+    person.save().then(savedNote => {
+        response.json(savedNote)
+    })
 
-    response.json(person)
+
 })
 
 
@@ -116,5 +117,5 @@ app.post('/api/persons', (request, response) => {
 const PORT = process.env.PORT || 3001
 
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`)
+    console.log(`Server running on port ${PORT}`)
 })
