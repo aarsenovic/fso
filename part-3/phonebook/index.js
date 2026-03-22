@@ -1,5 +1,7 @@
+require('dotenv').config()
 const express = require('express')
 const app = express()
+const Person = require('./models/person')
 
 
 app.use(express.static('dist'))
@@ -39,7 +41,10 @@ let persons = [
 ]
 
 app.get('/api/persons', (request, response)=> {
-    response.json(persons)
+    // response.json(persons)
+    Person.find({}).then(persons => {
+        response.json(persons)
+    })
 })
 
 app.get('/info', (request, response)=> {
