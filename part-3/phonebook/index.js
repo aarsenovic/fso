@@ -11,8 +11,8 @@ app.use(express.json())
 
 const morgan = require('morgan')
 
-morgan.token('body', (req, res) => {
-    return JSON.stringify(req.body);
+morgan.token('body', req => {
+  return JSON.stringify(req.body)
 })
 
 app.use(morgan(':method :url :status :response-time ms - Request Body: :body'))
@@ -41,79 +41,79 @@ app.use(morgan(':method :url :status :response-time ms - Request Body: :body'))
 // ]
 
 app.get('/api/persons', (request, response) => {
-    // response.json(persons)
-    Person.find({}).then(persons => {
-        response.json(persons)
-    })
+// response.json(persons)
+  Person.find({}).then(persons => {
+    response.json(persons)
+  })
 })
 
 app.get('/info', (request, response, next) => {
-    Person.countDocuments({})
-        .then(result => {
-            response.send(`
+  Person.countDocuments({})
+    .then(result => {
+      response.send(`
         <p>Phonebook has info for ${result} people</p>
         <p>${new Date()}</p>
         `)
-        })
-        .catch(error => next(error))
+    })
+    .catch(error => next(error))
 
 
 })
 
 app.get('/api/persons/:id', (request, response, next) => {
-    Person.findById(request.params.id)
+  Person.findById(request.params.id)
     .then(person => {
-        if (person) {
-            response.json(person)
-        } else {
-            response.status(404).end()
-        }
+      if (person) {
+        response.json(person)
+      } else {
+        response.status(404).end()
+      }
     })
     .catch(error => next(error))
 })
 
 
 app.delete('/api/persons/:id', (request, response, next) => {
-    Person.findByIdAndDelete(request.params.id)
-        .then(result => {
-            response.status(204).end()
-        })
-        .catch(error => next(error))
+  Person.findByIdAndDelete(request.params.id)
+    .then(() => {
+      response.status(204).end()
+    })
+    .catch(error => next(error))
 })
 
 
 app.post('/api/persons', (request, response, next) => {
-    // const generatedId = Math.floor(Math.random() * 10000)
+// const generatedId = Math.floor(Math.random() * 10000)
 
-    const body = request.body
+  const body = request.body
 
-    if (!body.name) {
-        return response.status(400).json({
-            error: 'name is required'
-        })
-    }
-    if (!body.number) {
-        return response.status(400).json({
-            error: 'number is required'
-        })
-    }
-
-    // const existingName = persons.find(person => person.name === body.name)
-
-    // if (existingName) {
-    //     return response.status(400).json({
-    //         error: 'name already exists'
-    //     })
-    // }
-
-    const person = new Person({
-        name: body.name,
-        number: body.number,
+  if (!body.name) {
+    return response.status(400).json({
+      error: 'name is required'
     })
-
-    person.save().then(savedPerson => {
-        response.json(savedPerson)
+  }
+  if (!body.number) {
+    return response.status(400).json({
+      error: 'number is required'
     })
+  }
+
+  // const existingName = persons.find(person => person.name === body.name)
+
+  // if (existingName) {
+  //     return response.status(400).json({
+  //         error: 'name already exists'
+  //     })
+  // }
+
+  const person = new Person({
+    name: body.name,
+    number: body.number,
+  })
+
+  person.save().then(savedPerson => {
+    response.json(savedPerson)
+  })
     .catch(error => next(error))
 
 
@@ -121,35 +121,35 @@ app.post('/api/persons', (request, response, next) => {
 
 
 app.put('/api/persons/:id', (request, response, next) => {
-    const { name, number } = request.body
+  const { name, number } = request.body
 
-    Person.findById(request.params.id)
-        .then(person => {
-            if (!person) {
-                return response.status(404).end()
-            }
+  Person.findById(request.params.id)
+    .then(person => {
+      if (!person) {
+        return response.status(404).end()
+      }
 
-            person.name = name
-            person.number = number
+      person.name = name
+      person.number = number
 
-            return person.save().then((updatedPerson) => {
-                response.json(updatedPerson)
-            })
-        })
-        .catch(error => next(error))
+      return person.save().then((updatedPerson) => {
+        response.json(updatedPerson)
+      })
+    })
+    .catch(error => next(error))
 })
 
 
 const errorHandler = (error, request, response, next) => {
-    console.error(error.message)
+  console.error(error.message)
 
-    if (error.name === 'CastError') {
-        return response.status(400).send({ error: 'malformatted id' })
-    } else if (error.name === 'ValidationError') {
-        return response.status(400).json({ error: error.message })
-    }
+  if (error.name === 'CastError') {
+    return response.status(400).send({ error: 'malformatted id' })
+  } else if (error.name === 'ValidationError') {
+    return response.status(400).json({ error: error.message })
+  }
 
-    next(error)
+  next(error)
 }
 
 
@@ -162,5 +162,5 @@ app.use(errorHandler)
 const PORT = process.env.PORT || 3001
 
 app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`)
+  console.log(`Server running on port ${PORT}`)
 })
