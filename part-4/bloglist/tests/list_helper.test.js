@@ -187,12 +187,69 @@ describe('most blogs', () => {
 
   test('has most blogs', () => {
     const result = listHelper.mostBlogs(blogs)
-    assert.deepStrictEqual(result, { author:'Edsger W. Dijkstra', blogs: 3 })
+    assert.deepStrictEqual(result, { author: 'Edsger W. Dijkstra', blogs: 3 })
   })
 
 
   test('of empty list returns null', () => {
     const result = listHelper.mostBlogs([])
+    assert.strictEqual(result, null)
+  })
+})
+
+
+describe('total likes', () => {
+  const blogs = [
+    {
+      _id: "5a422b3a1b54a676234d17f8",
+      title: "Canonical string reduction",
+      author: "Edsger W. Dijkstra",
+      url: "http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html",
+      likes: 12,
+      __v: 0
+    },
+    {
+      _id: "5a422b3a1b54a676234d17f9",
+      title: "Post 2",
+      author: "Edsger W. Dijkstra",
+      url: "http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html",
+      likes: 12,
+      __v: 0
+    },
+    {
+      _id: "5a422b3a1b54a676234d17f7",
+      title: "Post 3",
+      author: "Edsger W. Dijkstra",
+      url: "http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html",
+      likes: 12,
+      __v: 0
+    },
+    {
+      _id: "5a422b3a1b54a676234d17f2",
+      title: "Linux supermacy",
+      author: "Linus Torvalds",
+      url: "http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html",
+      likes: 10,
+      __v: 0
+    },
+    {
+      _id: "5a422b3a1b54a676234d17f3",
+      title: "Archlinux",
+      author: "Linus Torvalds",
+      url: "http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html",
+      likes: 10,
+      __v: 0
+    },
+  ]
+
+  test('author with most likes', () => {
+    const result = listHelper.mostLikes(blogs)
+    assert.deepStrictEqual(result, { author:'Edsger W. Dijkstra', likes: 36 })
+  })
+
+
+  test('of empty author list returns null', () => {
+    const result = listHelper.mostLikes([])
     assert.strictEqual(result, null)
   })
 })
