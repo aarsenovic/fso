@@ -5,6 +5,7 @@ const supertest = require('supertest')
 const app = require('../app')
 const helper = require('./test_helper')
 const Blog = require('../models/blog')
+const { all } = require('../controllers/blogs')
 
 const api = supertest(app)
 
@@ -30,6 +31,13 @@ test('all blogs are returned', async() => {
     assert.strictEqual(response.body.length, helper.initialBlogs.length)
 })
 
+
+test.only("blog post's unique identifier is called id", async() => {
+  const response = await api.get('/api/blogs')
+  const allHaveId = response.body.every(object => Object.hasOwn(object, 'id') && !Object.hasOwn(object, '_id'))
+
+  assert.strictEqual(allHaveId, true)
+})
 
 
 
