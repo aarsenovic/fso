@@ -32,7 +32,7 @@ test('all blogs are returned', async() => {
 })
 
 
-test.only("blog post's unique identifier is called id", async() => {
+test("blog post's unique identifier is called id", async() => {
   const response = await api.get('/api/blogs')
   const allHaveId = response.body.every(object => Object.hasOwn(object, 'id') && !Object.hasOwn(object, '_id'))
 
