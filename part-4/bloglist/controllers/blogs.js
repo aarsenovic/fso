@@ -12,9 +12,15 @@ blogRouter.post('/', async (request, response) => {
   const blog = new Blog(request.body)
 
 
-  const savedBlog = await blog.save()
+  try {
+    const savedBlog = await blog.save()
+    response.status(201).json(savedBlog)
+  } catch (error) {
+    return response.status(400).json({error: error.message})
+  }
 
-  response.status(201).json(savedBlog)
+
+
 })
 
 

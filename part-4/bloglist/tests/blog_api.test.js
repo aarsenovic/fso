@@ -77,10 +77,38 @@ test('like property is missing from request, default is 0', async () => {
     .expect(201)
     .expect('Content-Type', /application\/json/)
 
-    const blogsAtEnd = await helper.blogsInDb()
-    const lastAddedBlog = blogsAtEnd.find(blog => blog.url === newBlog.url)
+  const blogsAtEnd = await helper.blogsInDb()
+  const lastAddedBlog = blogsAtEnd.find(blog => blog.url === newBlog.url)
 
-    assert.strictEqual(lastAddedBlog.likes === 0, true)
+  assert.strictEqual(lastAddedBlog.likes === 0, true)
+
+})
+
+test('title is missing, return 400', async () => {
+  const newBlog = {
+    author: 'Linus Torvalds',
+    url: 'https://archlinux.org/archlinux-is-the-best',
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(400)
+    .expect('Content-Type', /application\/json/)
+
+})
+
+test('url is missing, return 400', async () => {
+  const newBlog = {
+    title: 'Archlinux is the best',
+    author: 'Linus Torvalds',
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(400)
+    .expect('Content-Type', /application\/json/)
 
 })
 
