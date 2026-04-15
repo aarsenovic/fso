@@ -64,6 +64,25 @@ test('a valid blog post can be added', async () => {
 })
 
 
+test('like property is missing from request, default is 0', async () => {
+  const newBlog = {
+    title: 'Archlinux is the best',
+    author: 'Linus Torvalds',
+    url: 'https://archlinux.org/archlinux-is-the-best',
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+    const blogsAtEnd = await helper.blogsInDb()
+    const lastAddedBlog = blogsAtEnd.find(blog => blog.url === newBlog.url)
+
+    assert.strictEqual(lastAddedBlog.likes === 0, true)
+
+})
 
 
 after(async () => {
