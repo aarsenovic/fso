@@ -113,18 +113,41 @@ test('url is missing, return 400', async () => {
 })
 
 
-test('deletion of a blog', async()=>{
-      const blogsAtStart = await helper.blogsInDb()
-      const blogToDelete = blogsAtStart[0]
+test('deletion of a blog', async () => {
+  const blogsAtStart = await helper.blogsInDb()
+  const blogToDelete = blogsAtStart[0]
 
-      await api.delete(`/api/blogs/${blogToDelete.id}`).expect(204)
+  await api.delete(`/api/blogs/${blogToDelete.id}`).expect(204)
 
-      const blogsAtEnd = await helper.blogsInDb()
+  const blogsAtEnd = await helper.blogsInDb()
 
-      const ids = blogsAtEnd.map(n => n.id)
-      assert(!ids.includes(blogToDelete.id))
+  const ids = blogsAtEnd.map(n => n.id)
+  assert(!ids.includes(blogToDelete.id))
 
-      assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length - 1)
+  assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length - 1)
+})
+
+
+test.only("updating a blog's likes succeeds", async () => {
+  const blogsAtStart = await helper.blogsInDb()
+  const newBlog = {
+    title: 'Linux is cool',
+    author: 'Linus Torvalds',
+    url: 'https://archlinux.org/linux-is-cool',
+    likes: 200,
+  }
+  const blogToChange = blogsAtStart[0]
+
+  await api
+    .put(`/api/blogs/${blogToChange.id}`)
+    .send(newBlog)
+    .expect(200)
+    .expect('Content-Type', /application\/json/)
+
+    const blogsAtEnd = await helper.blogsInDb()
+    const updatedBlog = blogsAtEnd.find(blog => blog.id === blogToChange.id)
+
+  assert.strictEqual(updatedBlog.likes , newBlog.likes)
 })
 
 
