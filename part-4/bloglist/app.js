@@ -4,7 +4,7 @@ const config = require('./utils/config')
 const logger = require('./utils/logger')
 const blogRouter = require('./controllers/blogs')
 const middleware = require('./utils/middleware')
-
+const usersRouter = require('./controllers/users')
 
 const app = express()
 
@@ -25,6 +25,7 @@ mongoose
 
 
 app.use('/api/blogs', blogRouter)
+app.use('/api/users', usersRouter)
 
 
 module.exports = app
