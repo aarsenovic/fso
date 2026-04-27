@@ -128,7 +128,7 @@ test('deletion of a blog', async () => {
 })
 
 
-test.only("updating a blog's likes succeeds", async () => {
+test("updating a blog's likes succeeds", async () => {
   const blogsAtStart = await helper.blogsInDb()
   const newBlog = {
     title: 'Linux is cool',

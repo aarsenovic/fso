@@ -27,5 +27,5 @@ mongoose
 app.use('/api/blogs', blogRouter)
 app.use('/api/users', usersRouter)
 
-
+app.use(middleware.errorHandler)
 module.exports = app
