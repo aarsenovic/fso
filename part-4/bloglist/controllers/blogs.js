@@ -14,7 +14,7 @@ const jwt = require('jsonwebtoken')
 
 
 blogRouter.get('/', async (request, response) => {
-  const blogs = await Blog.find({}).populate('user', {username: 1, name: 1})
+  const blogs = await Blog.find({}).populate('user', { username: 1, name: 1 })
   response.json(blogs)
 })
 
@@ -26,16 +26,16 @@ blogRouter.post('/', async (request, response) => {
 
   try {
     decodedToken = jwt.verify(request.token, process.env.SECRET)
-  } catch(error) {
-      return response.status(401).json({ error:'token invalid' })
+  } catch (error) {
+    return response.status(401).json({ error: 'token invalid' })
   }
 
 
 
   const user = await User.findById(decodedToken.id)
 
-  if(!user) {
-    return response.status(400).json({error:'userId missing or not valid'})
+  if (!user) {
+    return response.status(400).json({ error: 'userId missing or not valid' })
   }
 
   const blog = new Blog({
@@ -52,7 +52,7 @@ blogRouter.post('/', async (request, response) => {
     await user.save()
     response.status(201).json(savedBlog)
   } catch (error) {
-    return response.status(400).json({error: error.message})
+    return response.status(400).json({ error: error.message })
   }
 
 
@@ -60,18 +60,43 @@ blogRouter.post('/', async (request, response) => {
 })
 
 blogRouter.delete('/:id', async (request, response) => {
-  await Blog.findByIdAndDelete(request.params.id)
-  response.status(204).end()
+
+  let decodedToken
+
+  try {
+    decodedToken = jwt.verify(request.token, process.env.SECRET)
+  } catch (error) {
+    return response.status(401).json({ error: 'token invalid' })
+  }
+
+
+  const blog = await Blog.findById(request.params.id)
+
+  if (!blog) {
+    return response.status(404).json({ error: 'blog not found' })
+  }
+  
+ 
+
+  if (blog.user.toString() === decodedToken.id) {
+    await blog.deleteOne()
+    return response.status(204).end()
+  } else {
+    return response.status(403).end()
+  }
+
+
+
 })
 
 blogRouter.put('/:id', async (request, response) => {
-  const {title, author, url, likes} = request.body
+  const { title, author, url, likes } = request.body
 
 
   try {
     const blogForChanging = await Blog.findById(request.params.id)
 
-    if(!blogForChanging) {
+    if (!blogForChanging) {
       return response.status(404).json({ error: 'blog not found' })
     }
 
@@ -81,8 +106,8 @@ blogRouter.put('/:id', async (request, response) => {
     blogForChanging.likes = likes
     const savedBlog = await blogForChanging.save()
     return response.status(200).json(savedBlog)
-  } catch(error) {
-    return response.status(400).json({error: error.message})
+  } catch (error) {
+    return response.status(400).json({ error: error.message })
   }
 
 
