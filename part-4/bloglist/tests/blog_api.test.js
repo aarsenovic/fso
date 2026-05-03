@@ -6,16 +6,33 @@ const app = require('../app')
 const helper = require('./test_helper')
 const Blog = require('../models/blog')
 const { all } = require('../controllers/blogs')
+const User = require('../models/users')
+const bcrypt = require('bcrypt')
 
 const api = supertest(app)
 
 
 
-
+let token
 
 beforeEach(async () => {
   await Blog.deleteMany({})
+  await User.deleteMany({})
   await Blog.insertMany(helper.initialBlogs)
+
+  const passwordHash = await bcrypt.hash('sekret', 10)
+  const user = new User({ username: 'root', passwordHash })
+  await user.save()
+
+  const loginResponse = await api
+    .post('/api/login')
+    .send({
+      username: 'root',
+      password: 'sekret',
+    })
+
+  token = loginResponse.body.token
+
 })
 
 
@@ -49,6 +66,7 @@ test('a valid blog post can be added', async () => {
 
   await api
     .post('/api/blogs')
+    .set('Authorization', `Bearer ${token}`)
     .send(newBlog)
     .expect(201)
     .expect('Content-Type', /application\/json/)
@@ -73,6 +91,7 @@ test('like property is missing from request, default is 0', async () => {
 
   await api
     .post('/api/blogs')
+    .set('Authorization', `Bearer ${token}`)
     .send(newBlog)
     .expect(201)
     .expect('Content-Type', /application\/json/)
@@ -92,6 +111,7 @@ test('title is missing, return 400', async () => {
 
   await api
     .post('/api/blogs')
+    .set('Authorization', `Bearer ${token}`)
     .send(newBlog)
     .expect(400)
     .expect('Content-Type', /application\/json/)
@@ -106,6 +126,7 @@ test('url is missing, return 400', async () => {
 
   await api
     .post('/api/blogs')
+    .set('Authorization', `Bearer ${token}`)
     .send(newBlog)
     .expect(400)
     .expect('Content-Type', /application\/json/)
@@ -115,16 +136,33 @@ test('url is missing, return 400', async () => {
 
 test('deletion of a blog', async () => {
   const blogsAtStart = await helper.blogsInDb()
-  const blogToDelete = blogsAtStart[0]
+  //const blogToDelete = blogsAtStart[0]
 
-  await api.delete(`/api/blogs/${blogToDelete.id}`).expect(204)
+  const newBlog = {
+  title: 'delete me',
+  author: 'me',
+  url: 'http://test.com',
+  likes: 1,
+}
+
+const createdBlog = await api
+  .post('/api/blogs')
+  .set('Authorization', `Bearer ${token}`)
+  .send(newBlog)
+
+const blogId = createdBlog.body.id
+
+  await api
+    .delete(`/api/blogs/${blogId}`)
+    .set('Authorization', `Bearer ${token}`)
+    .expect(204)
 
   const blogsAtEnd = await helper.blogsInDb()
 
   const ids = blogsAtEnd.map(n => n.id)
-  assert(!ids.includes(blogToDelete.id))
+  assert(!ids.includes(blogId))
 
-  assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length - 1)
+assert.strictEqual(blogsAtEnd.length, blogsAtStart.length)
 })
 
 
@@ -144,11 +182,29 @@ test("updating a blog's likes succeeds", async () => {
     .expect(200)
     .expect('Content-Type', /application\/json/)
 
-    const blogsAtEnd = await helper.blogsInDb()
-    const updatedBlog = blogsAtEnd.find(blog => blog.id === blogToChange.id)
+  const blogsAtEnd = await helper.blogsInDb()
+  const updatedBlog = blogsAtEnd.find(blog => blog.id === blogToChange.id)
 
-  assert.strictEqual(updatedBlog.likes , newBlog.likes)
+  assert.strictEqual(updatedBlog.likes, newBlog.likes)
 })
+
+
+test('adding a blog fails with status 401 if token not provided', async () => {
+  const newBlog = {
+    title: 'No token blog',
+    author: 'Someone',
+    url: 'http://example.com',
+    likes: 5,
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(401)
+})
+
+
+
 
 
 after(async () => {
