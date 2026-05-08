@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import loginService from '../services/login'
+import blogService from '../services/blogs'
 
 
 const Login = ({ setUser, setErrorMessage }) => {
@@ -12,9 +13,15 @@ const Login = ({ setUser, setErrorMessage }) => {
         
         try {
             const user = await loginService.login({ username, password })
+
+            window.localStorage.setItem(
+                'loggedBlogAppUser', JSON.stringify(user)
+            )
+
             setUser(user)
             setUsername('')
             setPassword('')
+            blogService.setToken(user.token)
         } catch {
             setErrorMessage('wrong credentials')
             setTimeout(() => {
