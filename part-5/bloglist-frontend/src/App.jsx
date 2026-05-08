@@ -2,11 +2,12 @@ import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import Login from './components/Login'
+import NewBlogForm from './components/NewBlogForm'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
-  const [ errorMessage, setErrorMessage ] = useState(null)
+  const [errorMessage, setErrorMessage ] = useState(null)
 
     useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogAppUser')
@@ -51,6 +52,7 @@ const App = () => {
       )}
 
 
+      <NewBlogForm blogs={blogs} setBlogs={setBlogs}/>
     </div>
   )
 }
