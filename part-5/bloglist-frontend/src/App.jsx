@@ -1,9 +1,10 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import Login from './components/Login'
 import NewBlogForm from './components/NewBlogForm'
 import Notification from './components/Notification'
+import Togglable from './components/Togglable'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -24,6 +25,8 @@ const App = () => {
       setBlogs(blogs)
     )
   }, [])
+
+  const blogFormRef = useRef()
 
   const handleLogOut = () => {
     window.localStorage.removeItem('loggedBlogAppUser')
@@ -54,7 +57,10 @@ const App = () => {
       )}
 
 
-      <NewBlogForm blogs={blogs} setBlogs={setBlogs} setMessage={setMessage}/>
+      <Togglable buttonLabel='new blog' ref={blogFormRef}>
+        <NewBlogForm blogs={blogs} setBlogs={setBlogs} setMessage={setMessage} toggleVisibility={blogFormRef.current?.toggleVisibility}/>
+      </Togglable>
+
     </div>
   )
 }
