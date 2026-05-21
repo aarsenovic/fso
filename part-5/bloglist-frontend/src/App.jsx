@@ -52,7 +52,9 @@ const App = () => {
       <Notification message={message} />
       <button onClick={handleLogOut}>Logout</button>
       <p>{user.name} is logged in</p>
-      {blogs.map(blog =>
+      {[...blogs]
+      .sort((a,b)=> b.likes - a.likes)
+      .map(blog =>
         <Blog key={blog.id} blog={blog} blogs={blogs} setBlogs={setBlogs} />
       )}
 
