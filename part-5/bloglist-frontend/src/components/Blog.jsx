@@ -1,9 +1,9 @@
-import { useState } from "react"
+import { useState } from 'react'
 import blogService from '../services/blogs'
 
 const Blog = ({ blog, blogs, setBlogs,user }) => {
 
-  const [shown, setShown] = useState(false);
+  const [shown, setShown] = useState(false)
 
   const blogStyle = {
     paddingTop: 10,
@@ -18,21 +18,21 @@ const Blog = ({ blog, blogs, setBlogs,user }) => {
   }
 
   const handleLike = async event => {
-      event.preventDefault()
+    event.preventDefault()
 
-      const updateData = {
-        title: blog.title,
-        author: blog.author,
-        url: blog.url,
-        likes: blog.likes + 1,
-        user: blog.user.id
-      }
+    const updateData = {
+      title: blog.title,
+      author: blog.author,
+      url: blog.url,
+      likes: blog.likes + 1,
+      user: blog.user.id
+    }
 
-      console.log(updateData)
+    console.log(updateData)
 
     const updatedBlog = await blogService.update(blog.id, updateData)
 
-    
+
     setBlogs(blogs.map(b => b.id === blog.id ? updatedBlog : b ))
 
 
@@ -42,7 +42,7 @@ const Blog = ({ blog, blogs, setBlogs,user }) => {
     event.preventDefault()
 
     if(window.confirm(`Remove blog You're NOT gonna need it! by ${blog.author}`)) {
-      const deletedBlog = await blogService.remove(blog.id)
+      await blogService.remove(blog.id)
       setBlogs(blogs.filter(b => b.id !== blog.id))
     }
   }
@@ -60,7 +60,6 @@ const Blog = ({ blog, blogs, setBlogs,user }) => {
           <div>{blog.author}</div>
           {user.username === blog.user.username ?<button onClick={handleDelete}>Remove</button> :null}
         </div>}
-      
     </div>
   )
 }

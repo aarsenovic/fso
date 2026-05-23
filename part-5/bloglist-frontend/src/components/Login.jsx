@@ -5,65 +5,64 @@ import blogService from '../services/blogs'
 
 
 const Login = ({ setUser, setMessage }) => {
-    const [username, setUsername] = useState('')
-    const [password, setPassword] = useState('')
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
 
 
-    const handleLogin = async event => {
-        event.preventDefault()
-        
-        try {
-            const user = await loginService.login({ username, password })
+  const handleLogin = async event => {
+    event.preventDefault()
+    try {
+      const user = await loginService.login({ username, password })
 
-            window.localStorage.setItem(
-                'loggedBlogAppUser', JSON.stringify(user)
-            )
+      window.localStorage.setItem(
+        'loggedBlogAppUser', JSON.stringify(user)
+      )
 
-            setUser(user)
-            setUsername('')
-            setPassword('')
-            blogService.setToken(user.token)
-            setMessage('login successful')
-            setTimeout(()=>{
-                setMessage(null)
-            }, 5000)
-        } catch {
-            setMessage('wrong credentials')
-            setTimeout(() => {
-                setMessage(null)
-            }, 5000)
-        }
+      setUser(user)
+      setUsername('')
+      setPassword('')
+      blogService.setToken(user.token)
+      setMessage('login successful')
+      setTimeout(() => {
+        setMessage(null)
+      }, 5000)
+    } catch {
+      setMessage('wrong credentials')
+      setTimeout(() => {
+        setMessage(null)
+      }, 5000)
     }
+  }
 
-    return (
-        <>
-            <form onSubmit={handleLogin}>
-                <div>
-                    <label>
-                        username
-                        <input 
-                            type="text" 
-                            value={username}
-                            onChange={({target}) => setUsername(target.value)}
-                        />
-                    </label>
-                </div>
-                <div>
-                    <label>
-                        password
-                        <input 
-                            type="password" 
-                            value={password}
-                            onChange={({target}) => setPassword(target.value)}
-                        />
-                    </label>
-                </div>
-                <button type='submit'>login</button>
-            </form>
+  return (
+    <>
+      <form onSubmit={handleLogin}>
+        <div>
+          <label>
+                username
+            <input
+              type="text"
+              value={username}
+              onChange={({ target }) => setUsername(target.value)}
+            />
+          </label>
+        </div>
+        <div>
+          <label>
+                password
+            <input
+              type="password"
+              value={password}
+              onChange={({ target }) => setPassword(target.value)}
+            />
+          </label>
+        </div>
+        <button type='submit'>login</button>
+      </form>
 
-        </>
+    </>
 
-    )
+  )
 }
 
 

@@ -11,14 +11,13 @@ const App = () => {
   const [user, setUser] = useState(null)
   const [message, setMessage ] = useState(null)
 
-    useEffect(() => {
+  useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogAppUser')
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
       setUser(user)
       blogService.setToken(user.token)
 
-      console.log("OVO je user", user)
     }
   }, [])
 
@@ -55,10 +54,10 @@ const App = () => {
       <button onClick={handleLogOut}>Logout</button>
       <p>{user.name} is logged in</p>
       {[...blogs]
-      .sort((a,b)=> b.likes - a.likes)
-      .map(blog =>
-        <Blog key={blog.id} blog={blog} blogs={blogs} setBlogs={setBlogs}  user={user}/>
-      )}
+        .sort( (a,b ) => b.likes - a.likes)
+        .map(blog =>
+          <Blog key={blog.id} blog={blog} blogs={blogs} setBlogs={setBlogs}  user={user}/>
+        )}
 
 
       <Togglable buttonLabel='new blog' ref={blogFormRef}>
