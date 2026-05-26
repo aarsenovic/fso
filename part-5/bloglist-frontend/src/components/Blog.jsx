@@ -51,13 +51,13 @@ const Blog = ({ blog, blogs, setBlogs,user }) => {
 
     <div style={blogStyle}>
       <div>
-        {blog.title}<button onClick={toggleVisibility}>{shown ? 'hide' : 'show'}</button>
+        <div>{blog.title}<button onClick={toggleVisibility}>{shown ? 'hide' : 'show'}</button></div>
+        <div>{blog.author}</div>
       </div>
       {shown &&
         <div>
           <div>{blog.url}</div>
           <div>{blog.likes}<button onClick={handleLike}>like</button></div>
-          <div>{blog.author}</div>
           {user.username === blog.user.username ?<button onClick={handleDelete}>Remove</button> :null}
         </div>}
     </div>
