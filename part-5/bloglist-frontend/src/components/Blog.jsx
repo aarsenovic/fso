@@ -28,7 +28,7 @@ const Blog = ({ blog, blogs, setBlogs,user }) => {
       user: blog.user.id
     }
 
-    console.log(updateData)
+
 
     const updatedBlog = await blogService.update(blog.id, updateData)
 
