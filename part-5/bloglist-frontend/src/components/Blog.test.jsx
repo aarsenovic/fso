@@ -1,8 +1,9 @@
 import { render, screen } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import Blog from './Blog'
 
 
-test('renders title and authot', () => {
+test('renders title and author skips url and likes', () => {
   const blogExample = {
     title: 'Test Title',
     author: 'Mr. Test',
@@ -21,5 +22,37 @@ test('renders title and authot', () => {
   expect(author).toBeDefined()
   expect(url).toBeNull()
   expect(likes).toBeNull()
+
+})
+
+
+test('once button is clicked url and likes are visible', async () => {
+  const blogExample = {
+    title: 'Test Title',
+    author: 'Mr. Test',
+    url: 'hissite/test',
+    likes: 0,
+    user: {
+      username: 'Mr. Test'
+    }
+  }
+
+  const userExample = {
+    username: 'Mr. Test'
+  }
+
+  render(<Blog blog={blogExample} user={userExample}/>)
+
+  const user = userEvent.setup()
+
+  const button = screen.getByText('show')
+  await user.click(button)
+
+  const url = screen.getByText('hissite/test')
+  const likes =  screen.getByText('0')
+
+  expect(url).toBeVisible()
+  expect(likes).toBeVisible()
+
 
 })
