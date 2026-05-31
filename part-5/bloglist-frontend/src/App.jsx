@@ -36,6 +36,35 @@ const App = () => {
   }
 
 
+  const handleLike = async ( blog ) => {
+
+    const updateData = {
+      title: blog.title,
+      author: blog.author,
+      url: blog.url,
+      likes: blog.likes + 1,
+      user: blog.user.id
+    }
+
+
+
+    const updatedBlog = await blogService.update(blog.id, updateData)
+
+
+    setBlogs(blogs.map(b => b.id === blog.id ? updatedBlog : b ))
+
+
+  }
+
+  const handleDelete = async(blog) => {
+
+    if(window.confirm(`Remove blog You're NOT gonna need it! by ${blog.author}`)) {
+      await blogService.remove(blog.id)
+      setBlogs(blogs.filter(b => b.id !== blog.id))
+    }
+  }
+
+
   if (user === null) {
     return (
       <>
@@ -56,7 +85,7 @@ const App = () => {
       {[...blogs]
         .sort( (a,b ) => b.likes - a.likes)
         .map(blog =>
-          <Blog key={blog.id} blog={blog} blogs={blogs} setBlogs={setBlogs}  user={user}/>
+          <Blog key={blog.id} blog={blog} user={user} handleLike={handleLike} handleDelete={handleDelete}/>
         )}
 
 

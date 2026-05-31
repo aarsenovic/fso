@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import Blog from './Blog'
-import blogService from '../services/blogs'
+
 
 
 test('renders title and author skips url and likes', () => {
@@ -61,7 +61,42 @@ test('once button is clicked url and likes are visible', async () => {
 })
 
 
-test('Clicking like twice updates the state twice', async () => {
+// test('Clicking like twice updates the state twice', async () => {
+//   const blog = {
+//     title: 'Test',
+//     author: 'Me',
+//     url: 'test.com',
+//     likes: 0,
+//     user: { username: 'me', id: '1' }
+//   }
+//   const blogs = [blog]
+//   const setBlogs = vi.fn()
+
+//   const userExample = {
+//     username: 'me'
+//   }
+
+//   blogService.update = vi.fn().mockResolvedValue({ ...blog, likes: 1 })
+
+//   render(<Blog blog={blog} user={userExample} blogs={blogs} setBlogs={setBlogs}/>)
+
+//   const user = userEvent.setup()
+
+
+//   const button = screen.getByText('show')
+//   await user.click(button)
+
+//   const likeBtn = screen.getByText('like')
+
+//   await user.click(likeBtn)
+//   await user.click(likeBtn)
+
+//   expect(blogService.update).toHaveBeenCalledTimes(2)
+
+// })
+
+
+test('clicking like button twice calls event handler twice', async () => {
   const blog = {
     title: 'Test',
     author: 'Me',
@@ -69,16 +104,15 @@ test('Clicking like twice updates the state twice', async () => {
     likes: 0,
     user: { username: 'me', id: '1' }
   }
-  const blogs = [blog]
-  const setBlogs = vi.fn()
+
 
   const userExample = {
     username: 'me'
   }
 
-  blogService.update = vi.fn().mockResolvedValue({ ...blog, likes: 1 })
+  const mockHandler = vi.fn()
 
-  render(<Blog blog={blog} user={userExample} blogs={blogs} setBlogs={setBlogs}/>)
+  render(<Blog blog={blog} user={userExample} handleLike={mockHandler}/>)
 
   const user = userEvent.setup()
 
@@ -91,6 +125,6 @@ test('Clicking like twice updates the state twice', async () => {
   await user.click(likeBtn)
   await user.click(likeBtn)
 
-  expect(blogService.update).toHaveBeenCalledTimes(2)
+  expect(mockHandler.mock.calls).toHaveLength(2)
 
 })
