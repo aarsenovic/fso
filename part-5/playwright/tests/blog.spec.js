@@ -54,15 +54,34 @@ describe('Blog app', () => {
     })
 
     test('a blog can be liked', async ({ page }) => {
-      await createNote (page, 'Likes-test', 'Master Liker', 'website/liker-test')
-      
-      await page.getByRole('button', { name: 'show'}).click()
+      await createNote(page, 'Likes-test', 'Master Liker', 'website/liker-test')
+
+      await page.getByRole('button', { name: 'show' }).click()
 
       await expect(page.getByText('0')).toBeVisible()
 
-      await page.getByRole('button', {name: 'like'}).click()
+      await page.getByRole('button', { name: 'like' }).click()
 
       await expect(page.getByText('1')).toBeVisible()
+    })
+
+
+    test('a blog can be deleted', async ({ page }) => {
+      await createNote(page, 'Delete-test', 'Master Deleter', 'website/deleter')
+
+      page.on('dialog', async dialog => {
+        if (dialog.type() === 'confirm') {
+          await dialog.accept()
+        }
+      });
+
+      const deleteTest = page.locator('.blog', { hasText: 'Delete-test' })
+
+      await deleteTest.getByRole('button', { name: 'show' }).click()
+
+      await deleteTest.getByRole('button', { name: 'Remove' }).click()
+
+      await expect(page.getByText('Delete-test')).toHaveCount(0)
     })
 
 
