@@ -1,5 +1,5 @@
 const { test, expect, beforeEach, describe } = require('@playwright/test')
-const { loginWith, createNote } = require('./helper')
+const { loginWith, createNote, likeBlogNTimes } = require('./helper')
 
 describe('Blog app', () => {
   beforeEach(async ({ page, request }) => {
@@ -94,7 +94,7 @@ describe('Blog app', () => {
     test('only user that created blog sees remove button', async ({ page }) => {
       await createNote(page, 'Another-User-Test', 'Master', 'website/ubertester')
 
-      const visible = page.locator('.blog', {hasText: 'Another-User-Test'})
+      const visible = page.locator('.blog', { hasText: 'Another-User-Test' })
 
       await visible.getByRole('button', { name: 'show' }).click()
 
@@ -108,7 +108,28 @@ describe('Blog app', () => {
 
       await visible.getByRole('button', { name: 'show' }).click()
 
-       await expect(visible.getByText('Remove')).toHaveCount(0)
+      await expect(visible.getByText('Remove')).toHaveCount(0)
+    })
+
+
+    test('blogs are ordered by number of likes', async ({ page }) => {
+      await createNote(page, 'First', 'Master', 'website/first')
+      await expect(page.locator('.blog', { hasText: 'First' })).toBeVisible()
+
+      await createNote(page, 'Second', 'Master', 'website/second')
+      await expect(page.locator('.blog', { hasText: 'Second' })).toBeVisible()
+
+      await createNote(page, 'Third', 'Master', 'website/third')
+      await expect(page.locator('.blog', { hasText: 'Third' })).toBeVisible()
+
+      await likeBlogNTimes(page, 'First', 3)
+      await likeBlogNTimes(page, 'Second', 2)
+      await likeBlogNTimes(page, 'Third', 1)
+
+      const blogs = await page.locator('.blog').allTextContents()
+      expect(blogs[0]).toContain('First')
+      expect(blogs[1]).toContain('Second')
+      expect(blogs[2]).toContain('Third')
     })
 
 
