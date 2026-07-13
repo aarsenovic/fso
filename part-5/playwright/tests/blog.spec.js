@@ -11,6 +11,13 @@ describe('Blog app', () => {
         password: 'tester123'
       }
     })
+    await request.post('http://localhost:3003/api/users', {
+      data: {
+        name: 'tester',
+        username: 'testuser2',
+        password: 'tester1234'
+      }
+    })
     await page.goto('http://localhost:5173')
   })
 
@@ -82,6 +89,26 @@ describe('Blog app', () => {
       await deleteTest.getByRole('button', { name: 'Remove' }).click()
 
       await expect(page.getByText('Delete-test')).toHaveCount(0)
+    })
+
+    test('only user that created blog sees remove button', async ({ page }) => {
+      await createNote(page, 'Another-User-Test', 'Master', 'website/ubertester')
+
+      const visible = page.locator('.blog', {hasText: 'Another-User-Test'})
+
+      await visible.getByRole('button', { name: 'show' }).click()
+
+
+      await expect(visible.getByText('Remove')).toHaveCount(1)
+
+      await page.getByRole('button', { name: 'Logout' }).click()
+
+
+      await loginWith(page, 'testuser2', 'tester1234')
+
+      await visible.getByRole('button', { name: 'show' }).click()
+
+       await expect(visible.getByText('Remove')).toHaveCount(0)
     })
 
 
