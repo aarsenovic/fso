@@ -6,6 +6,7 @@ import BlogList from './components/BlogList'
 import { Routes, Route, Link } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom'
 import Blog from './components/Blog'
+import NewBlogForm from './components/NewBlogForm'
 
 
 const App = () => {
@@ -34,7 +35,7 @@ const App = () => {
 
 
 
-  const blogFormRef = useRef()
+  // const blogFormRef = useRef()
 
   const handleLogOut = () => {
     window.localStorage.removeItem('loggedBlogAppUser')
@@ -48,16 +49,17 @@ const App = () => {
 
   const createBlog = async blogObject => {
     try {
-      blogFormRef.current.toggleVisibility()
+      // blogFormRef.current.toggleVisibility()
       const createdBlog = await blogService.create(blogObject)
       setBlogs(blogs.concat(createdBlog))
       setMessage(`a new blog ${createdBlog.title} by ${createdBlog.author} added`)
       setTimeout(() => {
         setMessage(null)
       }, 5000)
-
+      navigate('/')
     } catch (error) {
       setMessage(`blog creation failed. Reason ${error.response.data.error}`)
+      console.log(error.response.data.error)
       setTimeout(() => {
         setMessage(null)
       }, 5000)
@@ -86,6 +88,7 @@ const App = () => {
     if(window.confirm(`Remove blog You're NOT gonna need it! by ${blog.author}`)) {
       await blogService.remove(blog.id)
       setBlogs(blogs.filter(b => b.id !== blog.id))
+      navigate('/')
     }
   }
 
@@ -99,8 +102,8 @@ const App = () => {
     <div>
       <div>
         <Link style={padding} to="/">blogs</Link>
+        {user && <Link to='/create' style={padding}>new blog</Link>}
         {user === null ?<Link style={padding} to="/login">login</Link> :<button onClick={handleLogOut}>Logout</button>}
-
       </div>
 
       <Notification message={message} />
@@ -108,6 +111,7 @@ const App = () => {
         <Route path='/blogs/:id' element={<Blog blogs={blogs}  user={user} handleLike={handleLike} handleDelete={handleDelete}/>} />
         <Route path='/' element={<BlogList blogs={blogs} />}/>
         <Route path='/login' element={<Login setMessage={setMessage} setUser={setUser}/>}/>
+        <Route path='/create' element={<NewBlogForm  createBlog={createBlog}/>}/>
       </Routes>
 
 
