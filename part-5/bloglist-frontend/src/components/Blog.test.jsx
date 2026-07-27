@@ -4,62 +4,106 @@ import Blog from './Blog'
 
 
 
-test('renders title and author skips url and likes', () => {
+
+
+test('Unauthorized user sees content but no buttons', () => {
   const blogExample = {
     title: 'Test Title',
     author: 'Mr. Test',
     url: 'hissite/test',
     likes: 0,
+    user:  {
+      username: 'Mr.Test',
+    }
   }
 
-  render(<Blog blog={blogExample}/>)
+  render(<Blog blog={blogExample} user={null}/>)
 
   const title = screen.getByText('Test Title')
   const author = screen.getByText('Mr. Test')
   const url = screen.queryByText('hissite/test')
   const likes = screen.queryByText('0')
 
+  const likeButton = screen.queryByText('like')
+  const removeButton = screen.queryByText('Remove')
+
   expect(title).toBeDefined()
   expect(author).toBeDefined()
-  expect(url).toBeNull()
-  expect(likes).toBeNull()
+  expect(url).toBeDefined()
+  expect(likes).toBeDefined()
+  expect(likeButton).toBeNull()
+  expect(removeButton).toBeNull()
 
 })
 
 
-test('once button is clicked url and likes are visible', async () => {
+test('Authenticated users who are not the blog’s creator are shown only the like button', () => {
   const blogExample = {
     title: 'Test Title',
     author: 'Mr. Test',
     url: 'hissite/test',
     likes: 0,
-    user: {
-      username: 'Mr. Test'
+    user:  {
+      username: 'Mr.Test',
     }
   }
 
   const userExample = {
-    username: 'Mr. Test'
+    username: 'Shura'
   }
-
-
 
   render(<Blog blog={blogExample} user={userExample}/>)
 
-  const user = userEvent.setup()
+  const title = screen.getByText('Test Title')
+  const author = screen.getByText('Mr. Test')
+  const url = screen.queryByText('hissite/test')
+  const likes = screen.queryByText('0')
 
-  const button = screen.getByText('show')
-  await user.click(button)
+  const likeButton = screen.queryByText('like')
+  const removeButton = screen.queryByText('Remove')
 
-  const url = screen.getByText('hissite/test')
-  const likes =  screen.getByText('0')
-
-  expect(url).toBeVisible()
-  expect(likes).toBeVisible()
-
+  expect(title).toBeDefined()
+  expect(author).toBeDefined()
+  expect(url).toBeDefined()
+  expect(likes).toBeDefined()
+  expect(likeButton).toBeDefined()
+  expect(removeButton).toBeNull()
 
 })
 
+test('The blog’s creator is also shown the delete button', () => {
+  const blogExample = {
+    title: 'Test Title',
+    author: 'Mr. Test',
+    url: 'hissite/test',
+    likes: 0,
+    user:  {
+      username: 'Mr.Test',
+    }
+  }
+
+  const userExample = {
+    username: 'Mr.Test'
+  }
+
+  render(<Blog blog={blogExample} user={userExample}/>)
+
+  const title = screen.getByText('Test Title')
+  const author = screen.getByText('Mr. Test')
+  const url = screen.queryByText('hissite/test')
+  const likes = screen.queryByText('0')
+
+  const likeButton = screen.queryByText('like')
+  const removeButton = screen.queryByText('Remove')
+
+  expect(title).toBeDefined()
+  expect(author).toBeDefined()
+  expect(url).toBeDefined()
+  expect(likes).toBeDefined()
+  expect(likeButton).toBeDefined()
+  expect(removeButton).toBeDefined()
+
+})
 
 
 
@@ -84,9 +128,6 @@ test('clicking like button twice calls event handler twice', async () => {
 
   const user = userEvent.setup()
 
-
-  const button = screen.getByText('show')
-  await user.click(button)
 
   const likeBtn = screen.getByText('like')
 

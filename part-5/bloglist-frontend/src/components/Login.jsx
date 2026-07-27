@@ -39,6 +39,7 @@ const Login = ({ setUser, setMessage }) => {
 
   return (
     <>
+      <h1>Login form</h1>
       <form onSubmit={handleLogin}>
         <div>
           <label>

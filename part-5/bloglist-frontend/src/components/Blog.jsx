@@ -2,11 +2,11 @@ import { useState } from 'react'
 import { useParams } from 'react-router-dom'
 
 
-const Blog = ({ blogs, user, handleLike, handleDelete }) => {
+const Blog = ({ blog, user, handleLike, handleDelete }) => {
 
   const [shown, setShown] = useState(false)
   const id = useParams().id
-  const blog = blogs.find(b => b.id === id)
+  // const blog = blogs.find(b => b.id === id)
 
   const blogStyle = {
     paddingTop: 10,

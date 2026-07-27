@@ -7,6 +7,7 @@ import { Routes, Route, Link } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom'
 import Blog from './components/Blog'
 import NewBlogForm from './components/NewBlogForm'
+import { useMatch } from 'react-router-dom'
 
 
 const App = () => {
@@ -15,6 +16,12 @@ const App = () => {
   const [message, setMessage ] = useState(null)
 
   const navigate = useNavigate()
+
+
+  const match = useMatch('/blogs/:id')
+  const blog = match
+    ?blogs.find(blog => blog.id === match.params.id)
+    :null
 
 
   useEffect(() => {
@@ -108,7 +115,7 @@ const App = () => {
 
       <Notification message={message} />
       <Routes>
-        <Route path='/blogs/:id' element={<Blog blogs={blogs}  user={user} handleLike={handleLike} handleDelete={handleDelete}/>} />
+        <Route path='/blogs/:id' element={<Blog blog={blog}  user={user} handleLike={handleLike} handleDelete={handleDelete}/>} />
         <Route path='/' element={<BlogList blogs={blogs} />}/>
         <Route path='/login' element={<Login setMessage={setMessage} setUser={setUser}/>}/>
         <Route path='/create' element={<NewBlogForm  createBlog={createBlog}/>}/>
