@@ -10,11 +10,14 @@ const loginWith = async (page, username, password)  => {
 }
 
 const createNote = async (page, title, author, url) => {
-      await page.getByRole('button', { name: 'new blog' }).click()
+      // await page.getByRole('button', { name: 'new blog' }).click()
+      await page.goto('http://localhost:5173/create')
       await page.getByLabel('title').fill(title)
       await page.getByLabel('author').fill(author)
       await page.getByLabel('url').fill(url)
       await page.getByRole('button', { name: 'Submit' }).click()
+
+      await expect(page.getByText(`a new blog ${title} by ${author} added`)).toBeVisible()
 }
 
 const likeBlogNTimes = async (page, title, n) => {
