@@ -8,6 +8,23 @@ import { useNavigate } from 'react-router-dom'
 import Blog from './components/Blog'
 import NewBlogForm from './components/NewBlogForm'
 import { useMatch } from 'react-router-dom'
+import styled from 'styled-components'
+
+
+const StyledNavbar = styled.div`
+  background-color: cyan;
+  font-size: 24px;
+  border-color: cyan;
+
+    a {
+    color: white;
+    text-decoration: none;
+    margin-right: 8px;
+  }
+`
+
+
+
 
 
 const App = () => {
@@ -107,11 +124,11 @@ const App = () => {
 
   return (
     <div>
-      <div>
+      <StyledNavbar>
         <Link style={padding} to="/">blogs</Link>
         {user && <Link to='/create' style={padding}>new blog</Link>}
         {user === null ?<Link style={padding} to="/login">login</Link> :<button onClick={handleLogOut}>Logout</button>}
-      </div>
+      </StyledNavbar>
 
       <Notification message={message} />
       <Routes>
