@@ -1,6 +1,19 @@
 import { useState } from 'react'
+import styled from 'styled-components'
 
 
+const StyledInput = styled.input`
+  border-radius: 6px;
+  border: 2px solid gray;
+  padding; 10px;
+`
+
+const StyledButton = styled.button`
+  color:white;
+  background-color: blue;
+  padding: 8px;
+  font-size: 20px;
+`
 
 const NewBlogForm = ({ createBlog }) => {
   const [title, setTitle] = useState('')
@@ -28,7 +41,7 @@ const NewBlogForm = ({ createBlog }) => {
         <div>
           <label>
                 title
-            <input
+            <StyledInput
               type="text"
               value={title}
               onChange={({ target }) => setTitle(target.value)}
@@ -38,7 +51,7 @@ const NewBlogForm = ({ createBlog }) => {
         <div>
           <label>
                 author
-            <input
+            <StyledInput
               type="text"
               value={author}
               onChange={({ target }) => setAuthor(target.value)}
@@ -48,14 +61,14 @@ const NewBlogForm = ({ createBlog }) => {
         <div>
           <label>
                 url
-            <input
+            <StyledInput
               type="text"
               value={url}
               onChange={({ target }) => setUrl(target.value)}
             />
           </label>
         </div>
-        <button type='submit'>Submit</button>
+        <StyledButton type='submit'>Submit</StyledButton>
       </form>
 
     </>

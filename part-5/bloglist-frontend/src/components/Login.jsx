@@ -2,7 +2,26 @@ import { useState } from 'react'
 import loginService from '../services/login'
 import blogService from '../services/blogs'
 import { useNavigate } from 'react-router-dom'
+import styled from 'styled-components'
 
+
+const StyledInput = styled.input`
+border-top: none;
+border-left: none;
+border-right: none;
+border-bottom: 4px solid gray;
+
+&:focus {
+  outline:none;
+}
+`
+
+const StyledButton = styled.button`
+  color:white;
+  background-color: blue;
+  padding: 8px;
+    font-size: 20px;
+`
 
 
 const Login = ({ setUser, setMessage }) => {
@@ -44,7 +63,7 @@ const Login = ({ setUser, setMessage }) => {
         <div>
           <label>
                 username
-            <input
+            <StyledInput
               type="text"
               value={username}
               onChange={({ target }) => setUsername(target.value)}
@@ -54,14 +73,14 @@ const Login = ({ setUser, setMessage }) => {
         <div>
           <label>
                 password
-            <input
+            <StyledInput
               type="password"
               value={password}
               onChange={({ target }) => setPassword(target.value)}
             />
           </label>
         </div>
-        <button type='submit'>login</button>
+        <StyledButton type='submit'>login</StyledButton>
       </form>
 
     </>
